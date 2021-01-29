@@ -8,8 +8,11 @@ import numpy as np
 
 from classification import DecisionTreeClassifier
 from improvement import train_and_predict
+from dataset import Dataset
 
 if __name__ == "__main__":
+    
+    """
     print("Loading the training dataset...");
     x = np.array([
             [5,7,1],
@@ -59,4 +62,12 @@ if __name__ == "__main__":
     print("Making predictions on the test set using the improved decision tree...")
     predictions = train_and_predict(x, y, x_test, x_val, y_val)
     print("Predictions: {}".format(predictions))
+    """
+    print("Loading the training dataset...");
+    dataset = Dataset()
+    x, y = dataset.load('./data/train_full.txt')
+    print(x.shape)
+    
+    
+    
     
