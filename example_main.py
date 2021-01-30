@@ -6,7 +6,7 @@
 
 import numpy as np
 
-from classification import DecisionTreeClassifier
+from classification import *
 from improvement import train_and_predict
 from dataset import Dataset
 
@@ -76,6 +76,8 @@ if __name__ == "__main__":
     tf_labels, tf_freq = np.unique(tf_y, return_counts=True)
     print('labels = ', tf_labels, '\nfreq   = ', tf_freq)
     print('range of each attributes = \n', np.ptp(tf_x, axis=0))
+    print('min of each attributes = \n', np.min(tf_x, axis=0))
+    print('max of each attributes = \n', np.max(tf_x, axis=0))
     print('')
     
     # Studying train_sub.txt
@@ -92,5 +94,14 @@ if __name__ == "__main__":
     print('noisy_y.shape = ', noisy_y.shape)
     noisy_labels, noisy_freq = np.unique(noisy_y, return_counts=True)
     print('labels = ', noisy_labels, '\nfreq   = ', noisy_freq)
+    
+    # Loading toy.txt
+    toy = Dataset()
+    toy_x, toy_y = toy.load('./data/toy.txt')
+    temp_classifier = DecisionTreeClassifier()
+    #temp_split = Split(0, 4)
+    #temp_classifier.calc_information_gain(toy_x, toy_y, temp_split)
+    root = temp_classifier.build_tree(toy_x, toy_y)
+    print(root.split.col, root.split.val)
     
     

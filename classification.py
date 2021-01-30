@@ -8,7 +8,24 @@
 ##############################################################################
 
 import numpy as np
+import math
 
+class Split():
+    def __init__(self, col, val):
+        self.col = col
+        self.val = val
+    
+
+class Node():
+    def __init__(self, left, right, split):
+        self.split = split
+        self.left_child = left
+        self.right_child = right
+        
+
+class Leaf():
+    def __init__(self, x):
+        self.res = x
 
 class DecisionTreeClassifier(object):
     """ Basic decision tree classifier
@@ -24,8 +41,103 @@ class DecisionTreeClassifier(object):
 
     def __init__(self):
         self.is_trained = False
+        self.tree_root = None
     
+    def calc_entropy(self, y):
+        
+        entropy = 0
+        unique_label, freq = np.unique(y, return_counts=True)
+        total = sum(freq)
+        #print(unique_label, freq)
+        #print(freq, total)
+        for i, (label, freq) in enumerate(zip(unique_label, freq)):
+            entropy += -(freq/total)*math.log(freq/total, 2)
+        
+        return entropy
+        
+    def partition(self, x, y, split):
+        col = split.col
+        val = split.val
+        
+        # partition
+        #left_x = x[x[:, col] < val, :] # using masking
+        #print(left_x)
+        #right_x = x[x[:, col] >= val, :]
+        #print(right_x)
+        
+        # left
+        indices = np.where(x[:,col] < val)
+        left_x = x[indices]
+        left_y = y[indices]
 
+        # right
+        indices = np.where(x[:,col] >= val)
+        right_x = x[indices]
+        right_y = y[indices]
+        
+        return left_x,left_y, right_x, right_y
+
+    def calc_information_gain(self, x, y, split):
+        
+        left_x,left_y, right_x, right_y = self.partition(x, y, split)
+        
+        # calc entropy
+        left_entropy = self.calc_entropy(left_y)
+        #print('left entropy = ', left_entropy)
+        right_entropy = self.calc_entropy(right_y)
+        #print('right entropy = ', right_entropy)
+        original_entropy = self.calc_entropy(y)
+        #print('original entropy = ', original_entropy)
+        
+        # calc information gain
+        
+        average_of_left_and_right_entropy = len(left_y)/len(y)*left_entropy + len(right_y)/len(y)*right_entropy
+        info_gain = original_entropy - average_of_left_and_right_entropy
+        
+        print('info gain = ', info_gain)
+        return info_gain
+        
+    
+    def find_optimal_split(self, x, y):
+        
+        optimal_split = None
+        max_info_gain = 0
+        seen = {}
+        
+        for row in range(len(x)):
+            for col in range(len(x[0])):
+                val = x[row][col]
+                if col in seen and val in seen[col]:
+                    continue
+                if col not in seen:
+                    seen[col] = []
+                
+                seen[col].append(val) # mark as seen
+                split = Split(col, val) # create split
+                info_gain = self.calc_information_gain(x, y, split)
+                
+                if info_gain > max_info_gain:
+                    max_info_gain = info_gain
+                    optimal_split = split
+        
+        return max_info_gain, optimal_split
+                
+        
+    def build_tree(self, x, y):
+        
+        info_gain, split = self.find_optimal_split(x, y)
+        
+        if info_gain == 0:
+            print('Leaf reached')
+            return Leaf(y)
+        
+        left_x,left_y, right_x, right_y = self.partition(x, y, split)
+        
+        left_child = self.build_tree(left_x, left_y)
+        right_child = self.build_tree(right_x, right_y)
+        
+        return Node(left_child, right_child, split)
+      
     def fit(self, x, y):
         """ Constructs a decision tree classifier from data
         
@@ -44,6 +156,9 @@ class DecisionTreeClassifier(object):
         #######################################################################
         #                 ** TASK 2.1: COMPLETE THIS METHOD **
         #######################################################################    
+        
+        return self.build_tree(x, y)
+        
         
 
         
