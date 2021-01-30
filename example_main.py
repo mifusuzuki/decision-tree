@@ -63,11 +63,34 @@ if __name__ == "__main__":
     predictions = train_and_predict(x, y, x_test, x_val, y_val)
     print("Predictions: {}".format(predictions))
     """
-    print("Loading the training dataset...");
-    dataset = Dataset()
-    x, y = dataset.load('./data/train_full.txt')
-    print(x.shape)
+    print("Loading the training dataset...\n");
     
+    train_full = Dataset()
+    tf_x, tf_y = train_full.load('./data/train_full.txt')
+    train_sub = Dataset()
+    ts_x, ts_y = train_sub.load('./data/train_sub.txt')
     
+    # Studying train_full.txt
+    print('tf_x.shape = ', tf_x.shape)
+    print('tf_y.shape = ', tf_y.shape)
+    tf_labels, tf_freq = np.unique(tf_y, return_counts=True)
+    print('labels = ', tf_labels, '\nfreq   = ', tf_freq)
+    print('range of each attributes = \n', np.ptp(tf_x, axis=0))
+    print('')
+    
+    # Studying train_sub.txt
+    print('ts_x.shape = ', ts_x.shape)
+    print('ts_y.shape = ', ts_y.shape)
+    ts_labels, ts_freq = np.unique(ts_y, return_counts=True)
+    print('labels = ', ts_labels, '\nfreq   = ', ts_freq)
+    print('')
+    
+    # Loading noisy.txt
+    noisy = Dataset()
+    noisy_x, noisy_y = noisy.load('./data/train_noisy.txt')
+    print('noisy_x.shape = ', noisy_x.shape)
+    print('noisy_y.shape = ', noisy_y.shape)
+    noisy_labels, noisy_freq = np.unique(noisy_y, return_counts=True)
+    print('labels = ', noisy_labels, '\nfreq   = ', noisy_freq)
     
     
