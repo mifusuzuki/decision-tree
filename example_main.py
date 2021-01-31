@@ -94,6 +94,7 @@ if __name__ == "__main__":
     print('noisy_y.shape = ', noisy_y.shape)
     noisy_labels, noisy_freq = np.unique(noisy_y, return_counts=True)
     print('labels = ', noisy_labels, '\nfreq   = ', noisy_freq)
+    print('')
     
     # Loading toy.txt
     toy = Dataset()
@@ -101,7 +102,7 @@ if __name__ == "__main__":
     temp_classifier = DecisionTreeClassifier()
     #temp_split = Split(0, 4)
     #temp_classifier.calc_information_gain(toy_x, toy_y, temp_split)
-    root = temp_classifier.build_tree(toy_x, toy_y)
-    print(root.split.col, root.split.val)
+    temp_classifier.build_tree(toy_x, toy_y)
+
     
     

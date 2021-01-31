@@ -94,7 +94,7 @@ class DecisionTreeClassifier(object):
         average_of_left_and_right_entropy = len(left_y)/len(y)*left_entropy + len(right_y)/len(y)*right_entropy
         info_gain = original_entropy - average_of_left_and_right_entropy
         
-        print('info gain = ', info_gain)
+        
         return info_gain
         
     
@@ -116,6 +116,8 @@ class DecisionTreeClassifier(object):
                 split = Split(col, val) # create split
                 info_gain = self.calc_information_gain(x, y, split)
                 
+                print('info gain = ', info_gain, ' col = ', col, ' val = ', val)
+                
                 if info_gain > max_info_gain:
                     max_info_gain = info_gain
                     optimal_split = split
@@ -130,7 +132,7 @@ class DecisionTreeClassifier(object):
         if info_gain == 0:
             print('Leaf reached')
             return Leaf(y)
-        
+        print('optimal info gain = ', info_gain, ' col = ', split.col, ' val = ', split.val)
         left_x,left_y, right_x, right_y = self.partition(x, y, split)
         
         left_child = self.build_tree(left_x, left_y)
@@ -157,10 +159,8 @@ class DecisionTreeClassifier(object):
         #                 ** TASK 2.1: COMPLETE THIS METHOD **
         #######################################################################    
         
-        return self.build_tree(x, y)
-        
-        
-
+        # build a tree and assign the returned root to self.tree_root
+        self.tree_root = self.build_tree(x, y)
         
         # set a flag so that we know that the classifier has been trained
         self.is_trained = True
