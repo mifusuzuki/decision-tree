@@ -34,6 +34,8 @@ build_tree() carries out post-order DFS by expanding the left most branches firs
 
 2.2 Implementation of predict()
 
+predict() iterates through a given test instances and calls find_label(instance, node) on each element with a single row of x and the tree_node as a parameter. find_label() takes those two inputs and first checks if the node is a leaf, and if it is, returns the label associated with the leaf node. If the node is a decision node, then node's member function, get_next_node(instance) is called to retrieve the appropriate child node (left or right). find_label() finally calls itself with the newly found next_node.
+
 Accuracy (train_sub)  = 0.745
 Accuracy (train_full) = 0.895
 
