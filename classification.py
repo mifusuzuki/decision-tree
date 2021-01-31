@@ -77,7 +77,7 @@ class DecisionTreeClassifier(object):
         
         return left_x,left_y, right_x, right_y
 
-    def calc_information_gain(self, x, y, split):
+    def calc_info_gain(self, x, y, split):
         
         left_x,left_y, right_x, right_y = self.partition(x, y, split)
         
@@ -114,7 +114,7 @@ class DecisionTreeClassifier(object):
                 
                 seen[col].append(val) # mark as seen
                 split = Split(col, val) # create split
-                info_gain = self.calc_information_gain(x, y, split)
+                info_gain = self.calc_info_gain(x, y, split)
                 
                 print('info gain = ', info_gain, ' col = ', col, ' val = ', val)
                 
