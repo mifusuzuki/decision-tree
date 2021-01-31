@@ -18,14 +18,20 @@ class Split():
 
 class Node():
     def __init__(self, left, right, split):
+        self.is_leaf = False
         self.split = split
-        self.left_child = left
-        self.right_child = right
-        
+        self.left_child = left # less than val
+        self.right_child = right # greater or equal to val
+    
+    def get_next_node(self, single_row):
+        if single_row[self.split.col] < self.split.val:
+            return self.left_child
+        return self.right_child
 
 class Leaf():
-    def __init__(self, x):
-        self.res = x
+    def __init__(self, label):
+        self.is_leaf = True
+        self.label = label
 
 class DecisionTreeClassifier(object):
     """ Basic decision tree classifier
@@ -116,7 +122,7 @@ class DecisionTreeClassifier(object):
                 split = Split(col, val) # create split
                 info_gain = self.calc_info_gain(x, y, split)
                 
-                print('info gain = ', info_gain, ' col = ', col, ' val = ', val)
+                #print('info gain = ', info_gain, ' col = ', col, ' val = ', val)
                 
                 if info_gain > max_info_gain:
                     max_info_gain = info_gain
@@ -130,9 +136,10 @@ class DecisionTreeClassifier(object):
         info_gain, split = self.find_optimal_split(x, y)
         
         if info_gain == 0:
-            print('Leaf reached')
-            return Leaf(y)
-        print('optimal info gain = ', info_gain, ' col = ', split.col, ' val = ', split.val)
+            #print('Leaf reached')
+            return Leaf(y[0]) # Returns the first element since they are all the same - IS THIS TRUE THO??
+        
+        #print('optimal info gain = ', info_gain, ' col = ', split.col, ' val = ', split.val)
         left_x,left_y, right_x, right_y = self.partition(x, y, split)
         
         left_child = self.build_tree(left_x, left_y)
@@ -161,10 +168,16 @@ class DecisionTreeClassifier(object):
         
         # build a tree and assign the returned root to self.tree_root
         self.tree_root = self.build_tree(x, y)
-        
+  
         # set a flag so that we know that the classifier has been trained
         self.is_trained = True
         
+    def find_label(self, instance, cur_node):
+        
+        if cur_node.is_leaf:
+            return cur_node.label
+        next_node = cur_node.get_next_node(instance)
+        return self.find_label(instance, next_node)
     
     def predict(self, x):
         """ Predicts a set of samples using the trained DecisionTreeClassifier.
@@ -194,10 +207,23 @@ class DecisionTreeClassifier(object):
         #                 ** TASK 2.2: COMPLETE THIS METHOD **
         #######################################################################
         
+        # Investigate one row at a time
+        for i, row in enumerate(x):
+            predictions[i] = self.find_label(row, self.tree_root)
     
         # remember to change this if you rename the variable
         return predictions
         
+    def prediction_accuracy(self, y_gold, y_prediction):
+    
+        assert len(y_gold) == len(y_prediction)
+    
+        try:
+            return np.sum(y_gold == y_prediction) / len(y_gold)
+        except ZeroDivisionError:
+            return 0
+        
+        return correct/total
 
     def prune(self, x_val, y_val):
         """ Post-prune your DecisionTreeClassifier given some optional validation dataset.

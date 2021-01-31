@@ -32,7 +32,10 @@ In order to find individual hypothetical information gain for all possible split
 
 build_tree() carries out post-order DFS by expanding the left most branches first then creates the right, then itself after which it returns itself. The last node returned by the top-most layer of the function is the root node, which is assigned to the classifier's self.tree_root.
 
+2.2 Implementation of predict()
 
+Accuracy (train_sub)  = 0.745
+Accuracy (train_full) = 0.895
 
 
 

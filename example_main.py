@@ -96,6 +96,7 @@ if __name__ == "__main__":
     print('labels = ', noisy_labels, '\nfreq   = ', noisy_freq)
     print('')
     
+    # 2.1
     # Loading toy.txt
     toy = Dataset()
     toy_x, toy_y = toy.load('./data/toy.txt')
@@ -103,6 +104,23 @@ if __name__ == "__main__":
     #temp_split = Split(0, 4)
     #temp_classifier.calc_information_gain(toy_x, toy_y, temp_split)
     temp_classifier.build_tree(toy_x, toy_y)
-
+    
+    # 2.2
+    # Loading test.txt
+    test = Dataset()
+    test_x, test_y = train_full.load('./data/test.txt')
+    # Loading train_sub.txt
+    train_sub = Dataset()
+    ts_x, ts_y = train_sub.load('./data/train_sub.txt')
+    temp_classifier = DecisionTreeClassifier()
+    temp_classifier.fit(ts_x, ts_y)
+    print(temp_classifier.is_trained)
+    prediction = temp_classifier.predict(test_x)
+    print('gold standard:\n')
+    print(test_y)
+    print('')
+    print('prediction:\n')
+    print(prediction)
+    print('accuracy = ', temp_classifier.prediction_accuracy(test_y, prediction))
     
     
